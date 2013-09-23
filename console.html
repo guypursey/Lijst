@@ -1,0 +1,239 @@
+<!doctype html>
+<html>
+<head>
+<style type="text/css">
+html, body {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	background-color: #111;
+	color: #eee;
+	cursor: none;
+}
+#console_area {
+	padding: 0;
+	margin: 0;
+	background-color: #111;
+	color: #eee;
+	font-size: 10pt;
+	font-family: "Courier New";
+	white-space: pre;
+	vertical-align: top;
+}
+#console_input_line {
+	width: 100%;
+    padding: 0;
+	margin: 0;
+	background-color: #111;
+	display: table;
+	border: 0 none #000;
+	border-collapse: collapse;
+	border-spacing: 0;
+	line-height: 1;
+}
+#console_prompt {
+	vertical-align: top;
+	width: 1px;
+    padding: 0;
+	margin: 0;
+	background-color: #111;
+	color: #eee;
+	font-size: 10pt;
+	font-family: "Courier New";
+	white-space: pre;
+	display: table-cell;
+	border: 0 none #000;
+	line-height: 1;
+}
+#console_input {
+	vertical-align: top;
+	width: 100%;
+	/* height: 100%; */
+	display: table-cell;
+	background-color: #111;
+	color: #eee;
+	font-size: 10pt;
+	font-family: "Courier New";
+	border: 0 none #000;
+	outline: 0;
+	padding: 0;
+	margin: 0;
+	line-height: 1;
+}
+</style>
+<script>
+
+var 
+
+lisp_fns = {
+	"+": function (args) {
+		var	rtn = 0;
+		while (args.length) {
+			rtn += args.shift();
+		};
+		return rtn;
+	}
+}
+
+cmd_log = [],
+cmd_key = 0,
+cmd_num = 1,
+
+update_console = function (value) {
+	document.getElementById("console_area").innerHTML += value;
+	document.getElementById("console_area").innerHTML += "<br>";
+},
+
+separate_terms = function (input) {
+	var str = input,
+		arr = [],
+		rst = "",
+		rex = /(\s+)|(.$)|(\()|(\))/g,
+		begin_term = 0,
+		end_term = 0,
+		paren_level = 0,
+		rfn = function ($m, $1, $2, $3, $4, offset, whole_string) {
+			var out;
+			if ($3) {
+				paren_level += 1;
+				if (!paren_level) {
+					begin_term = offset;
+				}
+			} else if ($4) {
+				paren_level -= 1;
+				if (!paren_level) {
+					end_term = offset + $m.length;
+					out = whole_string.slice(begin_term, end_term);
+					begin_term = end_term;
+				}
+			} else if ($1 && !paren_level) {
+				end_term = offset;
+				out = whole_string.slice(begin_term, end_term);
+				begin_term = end_term + $m.length;
+			} else if ($2) {
+				end_term = whole_string.length;
+				out = whole_string.slice(begin_term, end_term);
+				begin_term = end_term + $m.length;
+			}
+			
+			if (out) { arr.push(out); };
+			return $m;
+		};
+
+	rst = str.replace(rex, rfn);
+	return arr;
+},
+
+evaluate_term = function (term) {
+	var rtn,
+		arr,
+		fun,
+		arg = [];
+	if (/\D/g.test(term)) {
+		if (/^\(.*\)$/.test(term)) {
+			if (term.slice(1, -1)) {
+				arr = separate_terms(term.slice(1, -1));
+				fun = arr.shift();
+				while (arr.length) {
+					arg.push(evaluate_term(arr.shift()));
+				}
+				if (lisp_fns.hasOwnProperty(fun)) {
+					rtn = lisp_fns[fun](arg);
+				} else {
+					// TODO: What if there is no such function?
+				}
+			} else {
+				// If parentheses are empty.
+				rtn = "NIL";
+			}
+		}
+	} else {
+		rtn = +term;
+	}
+	return rtn;
+},
+
+process_input = function (input) {
+	var rtn,
+		arr = separate_terms(input),
+		rst;
+	
+	while (arr.length) {
+		update_console(prompt_get() + input);
+		input = "";
+		rst = evaluate_term(arr.shift());
+		update_console(rst);
+		prompt_set("[" + (cmd_num + 1) + "]> ");
+		cmd_num += 1;
+	}
+	
+	return rtn;
+},
+
+add_to_log = function (input) {
+	cmd_log.push(input);
+	cmd_key = cmd_log.length;
+},
+
+prompt_get = function () {
+	return document.getElementById("console_prompt").innerHTML;
+},
+
+prompt_set = function (value) {
+	document.getElementById("console_prompt").innerHTML = value;
+}
+
+input_get = function () {
+	return document.getElementById("console_input").value;
+},
+
+input_set = function (value) {
+	document.getElementById("console_input").value = value;
+},
+
+submit_input = function () {
+	var input = input_get();
+	input_set("");
+	add_to_log(input);
+	process_input(input);
+};
+
+window.onload = function () {
+	prompt_set("[1]> ");
+	document.getElementById("console_input").focus();
+	document.getElementById("console_input").onkeyup = function (k) {
+		var e = e || window.event; // for IE8
+		if (e.keyCode === 13) {
+			submit_input();
+		} else if (e.keyCode === 38) {
+			// up
+			cmd_key -= (cmd_key) ? 1 : 0;
+			input_set(cmd_log[cmd_key] || "");
+		} else if (e.keyCode === 40) {
+			// down
+			cmd_key += (cmd_key < cmd_log.length) ? 1 : 0;
+			input_set(cmd_log[cmd_key] || "");
+		}
+	};
+};
+
+</script>
+</head>
+<body>
+<div id="console_area">
+ i i i i i i i
+ I I I I I I I
+ I  \ `+´ /  I
+  \  `-+-´  /
+   `-__|__-´
+       |
+ ------+------
+</div>
+<div id="console_input_line">
+<div id="console_prompt"></div>
+<input id="console_input"></input>
+</div>
+</body>
+</head>
+</html>
