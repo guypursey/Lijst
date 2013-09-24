@@ -68,10 +68,31 @@ var
 
 lisp_fns = {
 	"+": function (args) {
-		var	rtn = 0;
+		var	rtn = 0; // CLISP returns 0 if `+` is given no arguments.
 		while (args.length) {
 			rtn += args.shift();
 		};
+		return rtn;
+	},
+	"-": function (args) {
+		var rtn = args.shift();
+		while (args.length) {
+			rtn -= args.shift();
+		};
+		return rtn;
+	},
+	"*": function (args) {
+		var rtn = 1; // CLISP returns 1 if `*` is given no arguments.
+		while (args.length) {
+			rtn *= args.shift();
+		};
+		return rtn;
+	},
+	"/": function (args) {
+		var rtn = args.shift();
+		while (args.length) {
+			rtn /= args.shift();
+		}
 		return rtn;
 	}
 }
