@@ -95,11 +95,43 @@ lisp_fns = {
 		}
 		return rtn;
 	}
-}
+},
 
-cmd_log = [],
-cmd_key = 0,
-cmd_num = 1,
+command_log = (function () {
+	var cmd_log = [],
+		cmd_key = 0,
+		cmd_num = 0,
+		cmd_cache = "",
+		add_cmd = function (cmd) {
+			cmd_log.push(cmd);
+			cmd_key = cmd_log.length;
+			cmd_cache = "";
+			return cmd;
+		},
+		cache_cmd = function (cmd) {
+			cmd_cache = cmd;
+			return cmd;
+		},
+		get_prompt = function () {
+			cmd_num += 1;
+			return "[" + cmd_num + "]> ";
+		},
+		get_prev_cmd = function () {
+			cmd_key -= (cmd_key) ? 1 : 0;
+			return cmd_log[cmd_key];
+		},
+		get_next_cmd = function () {
+			cmd_key += (cmd_key < cmd_log.length) ? 1 : 0;
+			return (cmd_key < cmd_log.length) ? cmd_log[cmd_key] : cmd_cache;
+		};
+	return {
+		add_cmd: add_cmd,
+		cache_cmd: cache_cmd,
+		get_prompt: get_prompt,
+		get_prev_cmd: get_prev_cmd,
+		get_next_cmd: get_next_cmd
+	};
+})(),
 
 update_console = function (value) {
 	document.getElementById("console_area").innerHTML += value;
@@ -185,16 +217,10 @@ process_input = function (input) {
 		input = "";
 		rst = evaluate_term(arr.shift());
 		update_console(rst);
-		prompt_set("[" + (cmd_num + 1) + "]> ");
-		cmd_num += 1;
+		prompt_set(command_log.get_prompt());
 	}
 	
 	return rtn;
-},
-
-add_to_log = function (input) {
-	cmd_log.push(input);
-	cmd_key = cmd_log.length;
 },
 
 prompt_get = function () {
@@ -213,28 +239,24 @@ input_set = function (value) {
 	document.getElementById("console_input").value = value;
 },
 
-submit_input = function () {
-	var input = input_get();
-	input_set("");
-	add_to_log(input);
-	process_input(input);
-};
-
 window.onload = function () {
-	prompt_set("[1]> ");
+	prompt_set(command_log.get_prompt());
 	document.getElementById("console_input").focus();
 	document.getElementById("console_input").onkeyup = function (k) {
-		var e = e || window.event; // for IE8
+		var e = e || window.event,
+			input = input_get(); // for IE8
 		if (e.keyCode === 13) {
-			submit_input();
+			input_set("");
+			command_log.add_cmd(input);
+			process_input(input);
 		} else if (e.keyCode === 38) {
 			// up
-			cmd_key -= (cmd_key) ? 1 : 0;
-			input_set(cmd_log[cmd_key] || "");
+			input_set(command_log.get_prev_cmd() || "");
 		} else if (e.keyCode === 40) {
 			// down
-			cmd_key += (cmd_key < cmd_log.length) ? 1 : 0;
-			input_set(cmd_log[cmd_key] || "");
+			input_set(command_log.get_next_cmd() || "");
+		} else {
+			command_log.cache_cmd(input);
 		}
 	};
 };
