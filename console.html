@@ -112,7 +112,10 @@ command_log = (function () {
 			cmd_cache = cmd;
 			return cmd;
 		},
-		get_prompt = function () {
+		get_curr_prompt = function () {
+			return "[" + cmd_num + "]> ";
+		},
+		get_next_prompt = function () {
 			cmd_num += 1;
 			return "[" + cmd_num + "]> ";
 		},
@@ -127,7 +130,8 @@ command_log = (function () {
 	return {
 		add_cmd: add_cmd,
 		cache_cmd: cache_cmd,
-		get_prompt: get_prompt,
+		get_curr_prompt: get_curr_prompt,
+		get_next_prompt: get_next_prompt,
 		get_prev_cmd: get_prev_cmd,
 		get_next_cmd: get_next_cmd
 	};
@@ -213,18 +217,14 @@ process_input = function (input) {
 		rst;
 	
 	while (arr.length) {
-		update_console(prompt_get() + input);
+		update_console(command_log.get_curr_prompt() + input);
 		input = "";
 		rst = evaluate_term(arr.shift());
 		update_console(rst);
-		prompt_set(command_log.get_prompt());
+		prompt_set(command_log.get_next_prompt());
 	}
 	
 	return rtn;
-},
-
-prompt_get = function () {
-	return document.getElementById("console_prompt").innerHTML;
 },
 
 prompt_set = function (value) {
@@ -240,10 +240,10 @@ input_set = function (value) {
 },
 
 window.onload = function () {
-	prompt_set(command_log.get_prompt());
+	prompt_set(command_log.get_next_prompt());
 	document.getElementById("console_input").focus();
 	document.getElementById("console_input").onkeyup = function (k) {
-		var e = e || window.event,
+		var e = k || window.event,
 			input = input_get(); // for IE8
 		if (e.keyCode === 13) {
 			input_set("");
