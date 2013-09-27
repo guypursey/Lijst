@@ -137,11 +137,6 @@ command_log = (function () {
 	};
 })(),
 
-update_console = function (value) {
-	document.getElementById("console_area").innerHTML += value;
-	document.getElementById("console_area").innerHTML += "<br>";
-},
-
 separate_terms = function (input) {
 	var str = input,
 		arr = [],
@@ -225,6 +220,11 @@ process_input = function (input) {
 	}
 	
 	return rtn;
+},
+
+update_console = function (value) {
+	document.getElementById("console_area").innerHTML += value;
+	document.getElementById("console_area").innerHTML += "<br>";
 },
 
 prompt_set = function (value) {
