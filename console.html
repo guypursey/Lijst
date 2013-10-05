@@ -112,12 +112,12 @@ command_log = (function () {
 			cmd_cache = cmd;
 			return cmd;
 		},
-		get_curr_prompt = function () {
-			return "[" + cmd_num + "]> ";
+		get_curr_prompt_num = function () {
+			return cmd_num;
 		},
-		get_next_prompt = function () {
+		get_next_prompt_num = function () {
 			cmd_num += 1;
-			return "[" + cmd_num + "]> ";
+			return cmd_num;
 		},
 		get_prev_cmd = function () {
 			cmd_key -= (cmd_key) ? 1 : 0;
@@ -130,8 +130,8 @@ command_log = (function () {
 	return {
 		add_cmd: add_cmd,
 		cache_cmd: cache_cmd,
-		get_curr_prompt: get_curr_prompt,
-		get_next_prompt: get_next_prompt,
+		get_curr_prompt_num: get_curr_prompt_num,
+		get_next_prompt_num: get_next_prompt_num,
 		get_prev_cmd: get_prev_cmd,
 		get_next_cmd: get_next_cmd
 	};
@@ -228,19 +228,19 @@ process_input = function (input) {
 		rst;
 	
 	while (arr.length) {
-		update_console(command_log.get_curr_prompt() + input);
+		update_console("input-" + command_log.get_curr_prompt_num(), "[" + command_log.get_curr_prompt_num() + "]> " + input);
 		input = "";
 		rst = evaluate_term(arr.shift());
-		update_console(rst);
-		prompt_set(command_log.get_next_prompt());
+		update_console("result-" + command_log.get_curr_prompt_num(), rst);
+		prompt_set("[" + command_log.get_next_prompt_num() + "]> ");
 	}
 	
 	return rtn;
 },
 
-update_console = function (value) {
-	document.getElementById("console_area").innerHTML += value;
-	document.getElementById("console_area").innerHTML += "<br>";
+update_console = function (id, value) {
+	// TODO: optimise
+	document.getElementById("console_area").innerHTML += "<div id='" + id + "' class='console_line'>" + value + "</div>";
 },
 
 prompt_set = function (value) {
@@ -253,10 +253,10 @@ input_get = function () {
 
 input_set = function (value) {
 	document.getElementById("console_input").value = value;
-},
+};
 
 window.onload = function () {
-	prompt_set(command_log.get_next_prompt());
+	prompt_set("[" + command_log.get_next_prompt_num() + "]> ");
 	document.getElementById("console_input").focus();
 	document.getElementById("console_input").onkeyup = function (k) {
 		var e = k || window.event,
