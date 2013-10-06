@@ -1,0 +1,51 @@
+html, body {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	background-color: #111;
+	color: #eee;
+	font-family: "Courier New";
+	font-size: 10pt;
+	font-weight: bold;
+	cursor: none;
+	vertical-align: top;
+}
+#console_area {
+	white-space: pre;
+}
+#console_input_line {
+	width: 100%;
+    padding: 0;
+	margin: 0;
+	background-color: #111;
+	display: table;
+	border: 0 none #000;
+	border-collapse: collapse;
+	border-spacing: 0;
+	line-height: 1;
+	white-space: pre;
+}
+#console_prompt {
+	vertical-align: top;
+	width: 1px;
+    padding: 0;
+	margin: 0;
+	display: table-cell;
+	border: 0 none #000;
+	line-height: 1;
+}
+#console_input {
+	vertical-align: top;
+	width: 100%;
+	display: table-cell;
+	background-color: #111;
+	color: #eee;
+	font-size: 10pt;
+	font-family: "Courier New";
+	border: 0 none #000;
+	outline: 0;
+	padding: 0;
+	margin: 0;
+	line-height: 1;
+}
