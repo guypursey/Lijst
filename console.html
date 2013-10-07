@@ -58,22 +58,6 @@ var command_log = (function () {
 		};
 	})(),
 
-	process_input = function (input) {
-		var rtn,
-			arr = separate_terms(input),
-			rst;
-		
-		while (arr.length) {
-			update_console("input-" + command_log.get_curr_prompt_num(), "[" + command_log.get_curr_prompt_num() + "]> " + input);
-			input = "";
-			rst = evaluate_term(arr.shift());
-			update_console("result-" + command_log.get_curr_prompt_num(), rst);
-			prompt_set("[" + command_log.get_next_prompt_num() + "]> ");
-		}
-		
-		return rtn;
-	},
-
 	update_console = function (id, value) {
 		// TODO: optimise
 		document.getElementById("console_area").innerHTML += "<div id='" + id + "' class='console_line'>" + value + "</div>";
@@ -100,20 +84,40 @@ var command_log = (function () {
 	};
 
 window.onload = function () {
+	var interpreter_script = document.createElement("script"),
+		// A method to be used after each separate command is processed.
+		init_callback = function () {
+				// Set up first prompt line and focus caret.
+				prompt_set("[" + command_log.get_next_prompt_num() + "]> ");
+				document.getElementById("console_input").focus();
 
-	var interpreter = document.createElement("script");
-	interpreter.src = "lisp_interpreter.js";
-	document.getElementsByTagName("script")[0].appendChild(interpreter);
-		
-	prompt_set("[" + command_log.get_next_prompt_num() + "]> ");
-	document.getElementById("console_input").focus();
+				//update_console("loaded-symbol", " i i i i i i i\n I I I I I I I\n I  \ `+´ /  I\n  \  `-+-´  /\n   `-__|__-´\n\n       |\n\n ------+------\n");
+			},
+		callback_each_command = function (input, result) {
+				update_console("input-" + command_log.get_curr_prompt_num(), "[" + command_log.get_curr_prompt_num() + "]> " + input);
+				update_console("result-" + command_log.get_curr_prompt_num(), result);
+				prompt_set("[" + command_log.get_next_prompt_num() + "]> ");
+			},
+		// When interpreter script has loaded, initialise and provide callback method.
+		interpreter = setInterval(function () {
+				if (init) {
+					clearInterval(interpreter);
+					interpreter = init(init_callback);
+				};
+			}, 1000);
+
+	// Load interpreter script.
+	interpreter_script.src = "lisp_interpreter.js?0.0.0";
+	document.getElementsByTagName("script")[0].appendChild(interpreter_script);
+
+	// Determine what happens when user presses keys inside input field.
 	document.getElementById("console_input").onkeyup = function (k) {
 		var e = k || window.event,
 			input = input_get(); // for IE8
 		if (e.keyCode === 13) {
 			input_set("");
 			command_log.add_cmd(input);
-			process_input(input);
+			interpreter.process_input(input, callback_each_command);
 		} else if (e.keyCode === 38) {
 			// up
 			input_set(command_log.get_prev_cmd() || "");
