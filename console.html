@@ -115,16 +115,18 @@ window.onload = function () {
 		var e = k || window.event,
 			input = input_get(); // for IE8
 		if (e.keyCode === 13) {
+			// When user presses return key, reset the input, add the command to the log, and process it.
 			input_set("");
 			command_log.add_cmd(input);
 			interpreter.process_input(input, callback_each_command);
 		} else if (e.keyCode === 38) {
-			// up
+			// When user presses "up" key, load previously used command.
 			input_set(command_log.get_prev_cmd() || "");
 		} else if (e.keyCode === 40) {
-			// down
+			// When user presses "down" key, load command they used after this command currently displaying, if any.
 			input_set(command_log.get_next_cmd() || "");
 		} else {
+			// Temporarily save what the user has typed, in case they need to look at previous command and come back.
 			command_log.cache_cmd(input);
 		}
 	};
