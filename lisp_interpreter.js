@@ -125,11 +125,19 @@ var init = function (initialise_callback) {
 					// Extract first term from array and evaluate.
 					rst = evaluate_term(arr.shift());
 					// Do something with the input and results.
-					callback_each_term(input, rst);
+					callback_each_term(input, print_result(rst));
 					// Reset the input. We have already done something with it once.
 					input = "";
 				}
 
+				return rtn;
+			},
+
+			print_result = function (result) {
+				var rtn = result;
+				if (typeof result === "number") {
+					rtn = "" + result;
+				}
 				return rtn;
 			};
 
