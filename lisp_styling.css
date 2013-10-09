@@ -6,7 +6,7 @@ html, body {
 	background-color: #111;
 	color: #eee;
 	font-family: "Courier New";
-	font-size: 10pt;
+	font-size: 100%;
 	font-weight: bold;
 	cursor: none;
 	vertical-align: top;
@@ -27,7 +27,6 @@ html, body {
 	white-space: pre;
 }
 #console_prompt {
-	vertical-align: top;
 	width: 1px;
     padding: 0;
 	margin: 0;
@@ -36,13 +35,13 @@ html, body {
 	line-height: 1;
 }
 #console_input {
-	vertical-align: top;
 	width: 100%;
 	display: table-cell;
 	background-color: #111;
 	color: #eee;
-	font-size: 10pt;
+	font-size: 100%;
 	font-family: "Courier New";
+	font-weight: bold;
 	border: 0 none #000;
 	outline: 0;
 	padding: 0;
