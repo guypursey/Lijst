@@ -1,0 +1,17 @@
+[
+	{
+		"c": "Test definition of variable.",
+		"t": "(defvar x 5)",
+		"r": ["X"]
+	},
+	{
+		"c": "Test recall of variable.",
+		"t": "X",
+		"r": ["5"]
+	},
+	{
+		"c": "Test recall of variable.",
+		"t": "X",
+		"r": ["5"]
+	}
+]

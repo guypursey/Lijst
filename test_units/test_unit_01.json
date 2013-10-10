@@ -1,0 +1,17 @@
+[
+	{
+		"c": "Test basic addition.",
+		"t": "(+ 5 5)",
+		"r": ["10"]
+	},
+	{
+		"c": "Test multiple commands in one line.",
+		"t": "(+ 5 5)(+ 5 3)",
+		"r": ["10", "8"]
+	},
+	{
+		"c": "Test multiplication.",
+		"t": "(* 5 5)",
+		"r": ["25"]
+	}
+]
