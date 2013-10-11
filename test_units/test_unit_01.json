@@ -1,17 +1,52 @@
 [
 	{
+		"c": "Test empty parentheses.",
+		"t": "()",
+		"r": ["NIL"]
+	},
+	{
+		"c": "Test empty addition function.",
+		"t": "(+)",
+		"r": ["0"]
+	},
+	{
 		"c": "Test basic addition.",
 		"t": "(+ 5 5)",
 		"r": ["10"]
 	},
 	{
-		"c": "Test multiple commands in one line.",
+		"c": "Test multiple addition commands in one line.",
 		"t": "(+ 5 5)(+ 5 3)",
 		"r": ["10", "8"]
+	},
+	{
+		"c": "Test subtraction.",
+		"t": "(- 5 5)",
+		"r": ["0"]
+	},
+	{
+		"c": "Test two subtractions within one command.",
+		"t": "(- 5 5 5)",
+		"r": ["-5"]
 	},
 	{
 		"c": "Test multiplication.",
 		"t": "(* 5 5)",
 		"r": ["25"]
+	},
+	{
+		"c": "Test multiple multiplications!",
+		"t": "(* 5 5 5)",
+		"r": ["125"]
+	},
+	{
+		"c": "Test division.",
+		"t": "(/ 5 1)",
+		"r": ["5"]
+	},
+	{
+		"c": "Test multiple division.",
+		"t": "(/ 10 2 1)",
+		"r": ["5"]
 	}
 ]
