@@ -29,6 +29,11 @@ var init = function (initialise_callback) {
 					return rtn;
 				}
 			},
+			
+			lisp_vars = {
+				"T": true,
+				"NIL": false
+			},
 
 			separate_terms = function (input) {
 				var str = input,
@@ -108,6 +113,11 @@ var init = function (initialise_callback) {
 					} else if (/^".*"$/g.test(term)) {
 						console.log(term);
 						rtn = term;
+					} else {
+						term = term.toUpperCase();
+						if (lisp_vars.hasOwnProperty(term)) {
+							return lisp_vars[term];
+						}
 					}
 				} else {
 					rtn = +term;
@@ -137,6 +147,8 @@ var init = function (initialise_callback) {
 				var rtn = result;
 				if (typeof result === "number") {
 					rtn = "" + result;
+				} else if (typeof result === "boolean") {
+					rtn = (result) ? "T" : "NIL";
 				}
 				return rtn;
 			};
