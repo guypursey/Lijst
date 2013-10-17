@@ -1,8 +1,8 @@
 #Lijst
 
-##v0.0.1
+##v0.0.2
 
-This version is very basic and only allows addition, subtraction, multiplication, and division and two basic variables: `T` and `NIL`. At the moment it's more along the lines of a proof-of-concept (though it doesn't prove much).
+This version is very basic and allows addition, subtraction, multiplication, and division and two basic variables: `T` and `NIL`. It also allows definition of new variables. At the moment the project is more along the lines of a proof-of-concept (though it doesn't prove much).
 
 ###What?
 
