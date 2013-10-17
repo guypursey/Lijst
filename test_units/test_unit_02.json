@@ -1,5 +1,15 @@
 [
 	{
+		"c": "Test t.",
+		"t": "t",
+		"r": ["T"]
+	},
+	{
+		"c": "Test nil.",
+		"t": "nil",
+		"r": ["NIL"]
+	},
+	{
 		"c": "Test definition of variable.",
 		"t": "(defvar x 5)",
 		"r": ["X"]
@@ -11,7 +21,7 @@
 	},
 	{
 		"c": "Test recall of variable.",
-		"t": "X",
-		"r": ["5"]
+		"t": "(+ 5 x)",
+		"r": ["10"]
 	}
 ]
