@@ -31,8 +31,14 @@ var init = function (initialise_callback) {
 			},
 			
 			lisp_vars = {
-				"T": true,
-				"NIL": false
+				"T": {
+					value: true,
+					locked: true
+				},
+				"NIL": {
+					value: false,
+					locked: true
+				}
 			},
 
 			separate_terms = function (input) {
@@ -116,7 +122,7 @@ var init = function (initialise_callback) {
 					} else {
 						term = term.toUpperCase();
 						if (lisp_vars.hasOwnProperty(term)) {
-							return lisp_vars[term];
+							return lisp_vars[term].value;
 						}
 					}
 				} else {
