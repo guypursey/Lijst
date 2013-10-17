@@ -27,6 +27,16 @@ var init = function (initialise_callback) {
 						rtn /= args.shift();
 					}
 					return rtn;
+				},
+				"defvar": function (symbol, bound_value) {
+					// arity: 2
+					var symbol = symbol.toUpperCase();
+					if (lisp_vars.hasOwnProperty[symbol]) {
+						// if locked, throw error; if not, ignore?
+					} else {
+						lisp_vars[symbol] = { value: bound_value, locked: false };
+					};
+					return symbol;
 				}
 			},
 			
@@ -104,11 +114,17 @@ var init = function (initialise_callback) {
 						if (term.slice(1, -1)) {
 							arr = separate_terms(term.slice(1, -1));
 							fun = arr.shift();
-							while (arr.length) {
-								arg.push(evaluate_term(arr.shift()));
-							}
+							
 							if (lisp_fns.hasOwnProperty(fun)) {
-								rtn = lisp_fns[fun](arg);
+								if (fun === "defvar") {
+									rtn = lisp_fns[fun](arr.shift(), evaluate_term(arr.shift()));
+								} else {
+									while (arr.length) {
+										arg.push(evaluate_term(arr.shift()));
+									}
+									rtn = lisp_fns[fun](arg);
+								}
+								
 							} else {
 								// TODO: What if there is no such function?
 							}
