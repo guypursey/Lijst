@@ -173,9 +173,11 @@ var init = function (initialise_callback) {
 					rtn = (result) ? "T" : "NIL";
 				}
 				return rtn;
-			};
+			},
+			
+			logo_data = "\n i i i i i i i\n I I I I I I I\n I  \\ `+´ /  I\n  \\  `-+-´  /\n   `-__|__-´\n       |\n ------+------\n";
 
-		initialise_callback();
+		initialise_callback(logo_data);
 
 		return {
 			process_input: process_input

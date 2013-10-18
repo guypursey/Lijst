@@ -4,15 +4,7 @@
 <link rel="stylesheet" href="lisp_styling.css">
 </head>
 <body>
-<div id="console_area">
- i i i i i i i
- I I I I I I I
- I  \ `+´ /  I
-  \  `-+-´  /
-   `-__|__-´
-       |
- ------+------
-</div>
+<div id="console_area"></div>
 <div id="console_input_line">
 <div id="console_prompt"></div>
 <input id="console_input"></input>
@@ -86,12 +78,12 @@ var command_log = (function () {
 window.onload = function () {
 	var interpreter_script = document.createElement("script"),
 		// A method to be used after each separate command is processed.
-		init_callback = function () {
+		init_callback = function (logo_data) {
 				// Set up first prompt line and focus caret.
 				prompt_set("[" + command_log.get_next_prompt_num() + "]> ");
 				document.getElementById("console_input").focus();
 
-				//update_console("loaded-symbol", " i i i i i i i\n I I I I I I I\n I  \ `+´ /  I\n  \  `-+-´  /\n   `-__|__-´\n\n       |\n\n ------+------\n");
+				update_console("logo", logo_data);
 			},
 		callback_each_command = function (input, result) {
 				update_console("input-" + command_log.get_curr_prompt_num(), "[" + command_log.get_curr_prompt_num() + "]> " + input);
