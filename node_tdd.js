@@ -33,10 +33,12 @@ while (test_units.length) {
 				var test_element = test_array.shift(),
 					callback_each_term = function (input, result) {
 							var expected_result = test_element.r.shift();
-							console.log("> " + input);
-							console.log("Expecting: " + expected_result);
-							console.log(result);
-							console.log((expected_result === result) ? "PASSED" : "FAILED");
+							if (check_flag("v")) {
+								console.log("> " + input);
+								console.log("Expecting: " + expected_result);
+								console.log(result);
+								console.log((expected_result === result) ? "PASSED" : "FAILED");
+							}
 							if (expected_result !== result) {
 								failure_stack.push(((test_array.length)) + ": " + result);
 							}
