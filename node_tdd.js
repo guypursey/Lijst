@@ -21,10 +21,13 @@ var lisp_interpreter = require("./lisp_interpreter.js").init( function () { cons
 
 while (test_units.length) {
 	(function () {
-		var test_array = require(test_folder + test_units.shift()),
+		var test_unit = test_units.shift(),
+			test_array = require(test_folder + test_unit),
 			test_unit_worth = 100 / test_array.length,
 			failure_stack = [];
-			
+		
+		console.log("Testing: " + test_unit);
+		
 		while (test_array.length) {
 			(function () {
 				var test_element = test_array.shift(),
