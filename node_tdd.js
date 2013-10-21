@@ -1,8 +1,24 @@
 var lisp_interpreter = require("./lisp_interpreter.js").init( function () { console.log("Interpreter loaded..."); } ),
 	test_folder = "./test_units/",
-	test_units = require(test_folder + "_test_units");
+	test_units = require(test_folder + "_test_units"),
+	check_flag = (function () {
+		var cache = {},
+			flags = process.argv.slice(2);
+		return function (whichFlag) {
+			return cache[whichFlag] || (function () {
+				var i = flags.length,
+					isFlag = new RegExp("\\-\\w*?" + whichFlag);
+				while (i && !cache.hasOwnProperty(whichFlag)) {
+					i -= 1;
+					if (isFlag.test(flags[i])) {
+						cache[whichFlag] = true;
+					};
+				};
+				return (cache[whichFlag] = cache[whichFlag] || false);
+			})();
+		};
+	})();
 
-//console.log(process.argv);
 while (test_units.length) {
 	(function () {
 		var test_array = require(test_folder + test_units.shift()),
