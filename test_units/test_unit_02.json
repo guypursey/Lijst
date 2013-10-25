@@ -1,27 +1,52 @@
 [
 	{
-		"c": "Test t.",
+		"c": "Evaluate t.",
 		"t": "t",
 		"r": ["T"]
 	},
 	{
-		"c": "Test nil.",
+		"c": "Evaluate nil.",
 		"t": "nil",
 		"r": ["NIL"]
 	},
 	{
-		"c": "Test definition of variable.",
+		"c": "Define variable.",
 		"t": "(defvar x 5)",
 		"r": ["X"]
 	},
 	{
-		"c": "Test recall of variable.",
+		"c": "Recall variable from previous test.",
 		"t": "X",
 		"r": ["5"]
 	},
 	{
-		"c": "Test recall of variable.",
+		"c": "Use variable in addition.",
 		"t": "(+ 5 x)",
 		"r": ["10"]
+	},
+	{
+		"c": "Use variable in subtraction.",
+		"t": "(- 5 x)",
+		"r": ["0"]
+	},
+	{
+		"c": "Use variable in multiplication.",
+		"t": "(* 5 x)",
+		"r": ["25"]
+	},
+	{
+		"c": "Use variable in division.",
+		"t": "(/ 5 x)",
+		"r": ["1"]
+	},
+	{
+		"c": "Use variable twice in addition.",
+		"t": "(+ x x)",
+		"r": ["10"]
+	},
+	{
+		"c": "Use variable twice in multiplication.",
+		"t": "(* x x)",
+		"r": ["25"]
 	}
 ]
