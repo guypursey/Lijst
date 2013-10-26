@@ -17,7 +17,17 @@ var lisp_interpreter = require("./lisp_interpreter.js").init( function () { cons
 				return (cache[whichFlag] = cache[whichFlag] || false);
 			})();
 		};
-	})();
+	})(),
+	report_on_failure_stack = function (test_unit_worth, failure_stack) {
+		var i = 0,
+			l = failure_stack.length;
+		console.log((100 - (test_unit_worth * l)) + "% PASSED");
+		console.log(l ? (l + " FAILURES:") : " ");
+		for (; i < l; i += 1) {
+			console.log(failure_stack[i]);
+		}
+		console.log(" ");
+	};
 
 while (test_units.length) {
 	(function () {
@@ -46,11 +56,8 @@ while (test_units.length) {
 			})(test_array.shift());
 		};
 		
-		console.log((100 - (test_unit_worth * failure_stack.length)) + "% PASSED");
-		if (failure_stack.length) {
-			console.log(failure_stack.length + " FAILURES:");
-			console.log(failure_stack);
-		}
+		report_on_failure_stack(test_unit_worth, failure_stack);
+		
 	})();
 };
 
