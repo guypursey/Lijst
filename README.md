@@ -1,8 +1,10 @@
 #Lijst
 
-##v0.0.2
+##v0.0.3
 
 This version is very basic and allows addition, subtraction, multiplication, and division and two basic variables: `T` and `NIL`. It also allows definition of new variables. At the moment the project is more along the lines of a proof-of-concept (though it doesn't prove much).
+
+However, it is also bundled with a NodeJS-dependent automated tester and test units. This is to check for bugs quickly as the project develops and to drive development forward (with tests that are initially written to fail).
 
 ###What?
 
