@@ -1,5 +1,4 @@
-var lisp_interpreter = require("./lisp_interpreter.js").init(function () { console.log("Interpreter loaded..."); }),
-	test_folder = "./test_units/",
+var test_folder = "./test_units/",
 	test_units = require(test_folder + "_test_units"),
 	check_flag = (function () {
 		var cache = {},
@@ -31,7 +30,8 @@ var lisp_interpreter = require("./lisp_interpreter.js").init(function () { conso
 	};
 
 test_units.forEach(function(test_unit) {
-		var test_array = require(test_folder + test_unit),
+		var lisp_interpreter = require("./lisp_interpreter.js").init(function () { console.log("Interpreter loaded..."); }),
+			test_array = require(test_folder + test_unit),
 			test_unit_worth = 100 / test_array.length,
 			failure_stack = [];
 		
