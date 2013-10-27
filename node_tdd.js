@@ -18,12 +18,10 @@ var test_folder = "./test_units/",
 		};
 	})(),
 	report_on_failure_stack = function (test_unit_worth, failure_stack) {
-		var i = 0,
-			l = failure_stack.length;
-		console.log((100 - (test_unit_worth * l)) + "% PASSED");
-		console.log(l ? (l + " FAILURES:") : " ");
+		console.log((100 - (test_unit_worth * failure_stack.length)) + "% PASSED");
+		console.log(failure_stack ? (failure_stack.length + " FAILURES:") : " ");
 		failure_stack.forEach(function (item) {
-			console.log(failure_stack[i]);
+			console.log(item);
 		});
 		console.log(" ");
 		return true;
