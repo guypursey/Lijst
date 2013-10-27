@@ -1,0 +1,27 @@
+[
+	{
+		"c": "Test construction of a list.",
+		"t": "(cons 1 2)",
+		"r": ["(1 . 2)"]
+	},
+	{
+		"c": "Test assignment of construction to a variable.",
+		"t": "(defvar x (cons 1 2))",
+		"r": ["X"]
+	},
+	{
+		"c": "Test recall of variable.",
+		"t": "X",
+		"r": ["(1 . 2)"]
+	},
+	{
+		"c": "Test `car` function.",
+		"t": "(car x)",
+		"r": ["1"]
+	},
+	{
+		"c": "Test `cdr` function.",
+		"t": "(cdr x)",
+		"r": ["2"]
+	}
+]
