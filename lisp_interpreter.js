@@ -1,11 +1,16 @@
 var init = function (initialise_callback) {
 		var lisp_fns = {
-				"+": function (args) {
-					var rtn = 0; // CLISP returns 0 if `+` is given no arguments.
-					while (args.length) {
-						rtn += args.shift();
-					};
-					return rtn;
+				"+": {
+					"min-arity": 1,
+					"max-arity": null, // infinite
+					"data-types": "number",
+					"fn": function (args) {
+						var rtn = 0; // CLISP returns 0 if `+` is given no arguments.
+						while (args.length) {
+							rtn += args.shift();
+						};
+						return rtn;
+					}
 				},
 				"-": function (args) {
 					var rtn = args.shift();
@@ -97,7 +102,11 @@ var init = function (initialise_callback) {
 								arg.push(evaluate_term(arr.shift()));
 							}
 							if (lisp_fns.hasOwnProperty(fun)) {
-								rtn = lisp_fns[fun](arg);
+								if (typeof lisp_fns[fun] === "function") {
+									rtn = lisp_fns[fun](arg);
+								} else if (typeof lisp_fns[fun] === "object") {
+									rtn = lisp_fns[fun].fn(arg);
+								}
 							} else {
 								// TODO: What if there is no such function?
 							}
