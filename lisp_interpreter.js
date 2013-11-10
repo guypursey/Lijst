@@ -35,6 +35,16 @@ var init = function (initialise_callback) {
 				}
 			},
 
+			wrap_function = function (fn_object) {
+				return function (args) {
+					var rtn;
+					if (args instanceof Array) {
+						rtn = fn_object.fn(args);
+					}
+					return rtn;
+				}
+			},
+
 			separate_terms = function (input) {
 				var str = input,
 					arr = [],
@@ -148,8 +158,18 @@ var init = function (initialise_callback) {
 					rtn = "" + result;
 				}
 				return rtn;
-			};
-
+			},
+			
+			f;
+		
+		for (f in lisp_fns) {
+			if (lisp_fns.hasOwnProperty(f)) {
+				if (lisp_fns[f].hasOwnProperty("fn")) {
+					lisp_fns[f] = wrap_function(lisp_fns[f]);
+				}
+			}
+		}
+		
 		initialise_callback();
 
 		return {
