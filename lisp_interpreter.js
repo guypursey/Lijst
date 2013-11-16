@@ -36,10 +36,14 @@ var init = function (initialise_callback) {
 			},
 
 			wrap_function = function (fn_object) {
+
+				// Decide on how the function should be accessed.
+				var fn = (fn_object.hasOwnProperty("fn")) ? fn_object.fn : fn_object;
+
 				return function (args) {
 					var rtn;
 					if (args instanceof Array) {
-						rtn = fn_object.fn(args);
+						rtn = fn(args);
 					}
 					return rtn;
 				}
@@ -162,11 +166,10 @@ var init = function (initialise_callback) {
 			
 			f;
 		
+		// Wrap predefined lisp functions in error-checking function.
 		for (f in lisp_fns) {
 			if (lisp_fns.hasOwnProperty(f)) {
-				if (lisp_fns[f].hasOwnProperty("fn")) {
-					lisp_fns[f] = wrap_function(lisp_fns[f]);
-				}
+				lisp_fns[f] = wrap_function(lisp_fns[f]);
 			}
 		}
 		
