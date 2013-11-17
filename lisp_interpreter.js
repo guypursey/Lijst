@@ -1,9 +1,9 @@
 var init = function (initialise_callback) {
 		var lisp_fns = {
 				"+": {
-					"min-arity": 1,
-					"max-arity": null, // infinite
-					"data-types": "number",
+					"minArity": 1,
+					"maxArity": Infinity,
+					"dataType": "number",
 					"fn": function (args) {
 						var rtn = 0; // CLISP returns 0 if `+` is given no arguments.
 						while (args.length) {
