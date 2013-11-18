@@ -118,8 +118,6 @@ var init = function (initialise_callback) {
 							if (lisp_fns.hasOwnProperty(fun)) {
 								if (typeof lisp_fns[fun] === "function") {
 									rtn = lisp_fns[fun](arg);
-								} else if (typeof lisp_fns[fun] === "object") {
-									rtn = lisp_fns[fun].fn(arg);
 								}
 							} else {
 								// TODO: What if there is no such function?
