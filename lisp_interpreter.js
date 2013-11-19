@@ -114,9 +114,7 @@ var init = function (initialise_callback) {
 								arg.push(evaluate_term(arr.shift()));
 							}
 							if (lisp_fns.hasOwnProperty(fun)) {
-								if (typeof lisp_fns[fun] === "function") {
-									rtn = lisp_fns[fun](arg);
-								}
+								rtn = lisp_fns[fun](arg);
 							} else {
 								// TODO: What if there is no such function?
 							}
