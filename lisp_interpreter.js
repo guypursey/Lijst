@@ -68,8 +68,6 @@ var init = function (initialise_callback) {
 							} else {
 								end_term = offset + $m.length;
 								out = whole_string.slice(begin_term, end_term);
-								console.log(end_term);
-								console.log(out);
 								begin_term = end_term;
 							}
 						} else if ($3 && !quote_level) {
