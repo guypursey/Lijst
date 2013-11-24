@@ -104,14 +104,15 @@ var init = function (initialise_callback) {
 				var rtn,
 					arr,
 					fun,
-					arg = [];
+					arg = [],
+					term = term[0];
 				if (/\D/g.test(term)) {
 					if (/^\(.*\)$/.test(term)) {
 						if (term.slice(1, -1)) {
 							arr = separate_terms(term.slice(1, -1));
 							fun = arr.shift();
 							while (arr.length) {
-								arg.push(evaluate_term(arr.shift()));
+								arg.push(evaluate_term(arr.splice(0, 1)));
 							}
 							if (lisp_fns.hasOwnProperty(fun)) {
 								rtn = lisp_fns[fun](arg);
@@ -140,7 +141,7 @@ var init = function (initialise_callback) {
 
 				while (arr.length) {
 					// Extract first term from array and evaluate.
-					rst = evaluate_term(arr.shift());
+					rst = evaluate_term(arr.splice(0, 1));
 					// Do something with the input and results.
 					callback_each_term(input, print_result(rst));
 					// Reset the input. We have already done something with it once.
