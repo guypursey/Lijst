@@ -56,9 +56,36 @@ var init = function (initialise_callback) {
 					};
 
 				return function (args) {
-					var rtn;
+					var rtn = {},
+						func_rtn,
+						a,
+						unpacked = [];
+
 					if (args instanceof Array) {
-						rtn = fn(args);
+						a = args.length;
+
+						if (a > maxArity) {
+							rtn.error = "Test error message. Too many arguments.";
+						} else if (a < minArity) {
+							rtn.error = "Test error message. Too few arguments.";
+						}
+
+						// Search for any one argument that goes against type, whilst unpacking.
+						for (; a && checkType(unpacked[a - 1] = (args[a - 1].value || args[a - 1])); a -= 1); // no body
+
+						// When a is falsy, the arguments are type-safe.
+						if (!a) {
+							func_rtn = fn(unpacked);
+							if (typeof func_rtn === "object" && (func_rtn.hasOwnProperty("value") || func_rtn.hasOwnProperty("error"))) {
+								rtn = func_rtn;
+							} else {
+								rtn.value = func_rtn;
+							}
+						} else {
+							rtn.error = "The argument " + (args[a - 1].value || args[a - 1]) + " was the wrong type.";
+						}
+					} else {
+						rtn.error = "Fault with Lijst. Arguments not passed as array.";
 					}
 					return rtn;
 				}
@@ -167,9 +194,17 @@ var init = function (initialise_callback) {
 			},
 
 			print_result = function (result) {
-				var rtn = result;
-				if (typeof result === "number") {
-					rtn = "" + result;
+				var rtn;
+				if (result.hasOwnProperty("value")) {
+					if (typeof result.value === "number") {
+						rtn = "" + result.value;
+					} else {
+						rtn = result.value;
+					}
+				} else if (result.hasOwnProperty("error")) {
+					rtn = result.error;
+				} else {
+					rtn = "Error at printing stage. No value or processing error found.";
 				}
 				return rtn;
 			},
@@ -183,6 +218,8 @@ var init = function (initialise_callback) {
 			}
 		}
 		
+		evaluate_term = wrap_function(evaluate_term);
+
 		initialise_callback();
 
 		return {
