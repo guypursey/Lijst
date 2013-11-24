@@ -1,7 +1,7 @@
 var init = function (initialise_callback) {
 		var lisp_fns = {
 				"+": {
-					"minArity": 1,
+					"minArity": 0,
 					"maxArity": Infinity,
 					"dataType": "number",
 					"fn": function (args) {
