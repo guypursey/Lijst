@@ -38,7 +38,22 @@ var init = function (initialise_callback) {
 			wrap_function = function (fn_object) {
 
 				// Decide on how the function should be accessed.
-				var fn = (fn_object.hasOwnProperty("fn")) ? fn_object.fn : fn_object;
+				var fn = fn_object.fn || fn_object,
+					maxArity = fn_object.maxArity || Infinity,
+					minArity = fn_object.minArity || 0,
+					dataType = fn_object.dataType || [ "number", "string" ],
+					checkType = function (arg) {
+						var rtn = false,
+							d;
+						if (dataType instanceof Array) {
+							for (d = dataType.length - 1; (d + 1) && !rtn; d -= 1) {
+								rtn = (typeof arg === dataType[d]);
+							}
+						} else if (typeof dataType === "string") {
+							rtn = typeof arg === dataType;
+						}
+						return rtn;
+					};
 
 				return function (args) {
 					var rtn;
