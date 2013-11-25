@@ -65,9 +65,9 @@ var init = function (initialise_callback) {
 						a = args.length;
 
 						if (a > maxArity) {
-							rtn.error = "Test error message. Too many arguments.";
+							rtn.error = "too many arguments";
 						} else if (a < minArity) {
-							rtn.error = "Test error message. Too few arguments.";
+							rtn.error = "too few arguments";
 						}
 
 						// Search for any one argument that goes against type, whilst unpacking.
@@ -202,7 +202,7 @@ var init = function (initialise_callback) {
 						rtn = result.value;
 					}
 				} else if (result.hasOwnProperty("error")) {
-					rtn = result.error;
+					rtn = "*** - " + result.error;
 				} else {
 					rtn = "Error at printing stage. No value or processing error found.";
 				}
