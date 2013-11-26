@@ -40,10 +40,11 @@ var init = function (initialise_callback) {
 				}
 			},
 
-			wrap_function = function (fn_object) {
+			wrap_function = function (fn_object, fn_name) {
 
 				// Decide on how the function should be accessed.
 				var fn = fn_object.fn || fn_object,
+					nm = fn_name || "unspecified function",
 					maxArity = fn_object.maxArity || Infinity,
 					minArity = fn_object.minArity || 0,
 					dataType = fn_object.dataType || [ "number", "string" ],
@@ -70,25 +71,28 @@ var init = function (initialise_callback) {
 						a = args.length;
 
 						if (a > maxArity) {
-							rtn.error = "too many arguments";
+							rtn.error = "EVAL: too many arguments" + nm;
 						} else if (a < minArity) {
-							rtn.error = "too few arguments";
+							rtn.error = "EVAL: too few arguments given to " + nm;
 						}
 
 						// Search for any one argument that goes against type, whilst unpacking.
 						for (; a && checkType(unpacked[a - 1] = (args[a - 1].value || args[a - 1])); a -= 1); // no body
-
-						// When a is falsy, the arguments are type-safe.
-						if (!a) {
-							func_rtn = fn(unpacked);
-							if (typeof func_rtn === "object" && (func_rtn.hasOwnProperty("value") || func_rtn.hasOwnProperty("error"))) {
-								rtn = func_rtn;
+						
+						if (!(rtn.error)) {
+							// When a is falsy, the arguments are type-safe.
+							if (!a) {
+								func_rtn = fn(unpacked);
+								if (typeof func_rtn === "object" && (func_rtn.hasOwnProperty("value") || func_rtn.hasOwnProperty("error"))) {
+									rtn = func_rtn;
+								} else {
+									rtn.value = func_rtn;
+								}
 							} else {
-								rtn.value = func_rtn;
+								rtn.error = nm + ": " + (args[a - 1].value || args[a - 1]) + " is not a " + fn_object.dataType;
 							}
-						} else {
-							rtn.error = "The argument " + (args[a - 1].value || args[a - 1]) + " was the wrong type.";
 						}
+						
 					} else {
 						rtn.error = "Fault with Lijst. Arguments not passed as array.";
 					}
@@ -219,7 +223,7 @@ var init = function (initialise_callback) {
 		// Wrap predefined lisp functions in error-checking function.
 		for (f in lisp_fns) {
 			if (lisp_fns.hasOwnProperty(f)) {
-				lisp_fns[f] = wrap_function(lisp_fns[f]);
+				lisp_fns[f] = wrap_function(lisp_fns[f], f);
 			}
 		}
 		
