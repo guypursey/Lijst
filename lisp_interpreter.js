@@ -12,12 +12,17 @@ var init = function (initialise_callback) {
 						return rtn;
 					}
 				},
-				"-": function (args) {
-					var rtn = args.shift();
-					while (args.length) {
-						rtn -= args.shift();
-					};
-					return rtn;
+				"-": {
+					"minArity": 1,
+					"maxArity": Infinity,
+					"dataType": "number",
+					"fn": function (args) {
+						var rtn = args.shift();
+						while (args.length) {
+							rtn -= args.shift();
+						};
+						return rtn;
+					}
 				},
 				"*": function (args) {
 					var rtn = 1; // CLISP returns 1 if `*` is given no arguments.
