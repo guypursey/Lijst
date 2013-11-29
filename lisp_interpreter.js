@@ -237,7 +237,7 @@ var init = function (initialise_callback) {
 			}
 		}
 		
-		evaluate_term = wrap_function(evaluate_term);
+		evaluate_term = wrap_function(evaluate_term, "eval");
 
 		initialise_callback();
 
