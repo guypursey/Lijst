@@ -1,32 +1,52 @@
 var init = function (initialise_callback) {
 		var lisp_fns = {
-				"+": function (args) {
-					var rtn = 0; // CLISP returns 0 if `+` is given no arguments.
-					while (args.length) {
-						rtn += args.shift();
-					};
-					return rtn;
-				},
-				"-": function (args) {
-					var rtn = args.shift();
-					while (args.length) {
-						rtn -= args.shift();
-					};
-					return rtn;
-				},
-				"*": function (args) {
-					var rtn = 1; // CLISP returns 1 if `*` is given no arguments.
-					while (args.length) {
-						rtn *= args.shift();
-					};
-					return rtn;
-				},
-				"/": function (args) {
-					var rtn = args.shift();
-					while (args.length) {
-						rtn /= args.shift();
+				"+": {
+					"minArity": 0,
+					"maxArity": Infinity,
+					"dataType": "number",
+					"fn": function (args) {
+						var rtn = 0; // CLISP returns 0 if `+` is given no arguments.
+						while (args.length) {
+							rtn += args.shift();
+						};
+						return rtn;
 					}
-					return rtn;
+				},
+				"-": {
+					"minArity": 1,
+					"maxArity": Infinity,
+					"dataType": "number",
+					"fn": function (args) {
+						var rtn = args.shift();
+						while (args.length) {
+							rtn -= args.shift();
+						};
+						return rtn;
+					}
+				},
+				"*": {
+					"minArity": 0,
+					"maxArity": Infinity,
+					"dataType": "number",
+					"fn": function (args) {
+						var rtn = 1; // CLISP returns 1 if `*` is given no arguments.
+						while (args.length) {
+							rtn *= args.shift();
+						};
+						return rtn;
+					}
+				},
+				"/": {
+					"minArity": 1,
+					"maxArity": Infinity,
+					"dataType": "number",
+					"fn": function (args) {
+						var rtn = args.shift();
+						while (args.length) {
+							rtn /= args.shift();
+						}
+						return rtn;
+					}
 				},
 				"defvar": function (symbol, bound_value) {
 					// arity: 2
@@ -51,6 +71,66 @@ var init = function (initialise_callback) {
 				}
 			},
 
+			wrap_function = function (fn_object, fn_name) {
+
+				// Decide on how the function should be accessed.
+				var fn = fn_object.fn || fn_object,
+					nm = fn_name || "unspecified function",
+					maxArity = fn_object.maxArity || Infinity,
+					minArity = fn_object.minArity || 0,
+					dataType = fn_object.dataType || [ "number", "string" ],
+					checkType = function (arg) {
+						var rtn = false,
+							d;
+						if (dataType instanceof Array) {
+							for (d = dataType.length - 1; (d + 1) && !rtn; d -= 1) {
+								rtn = (typeof arg === dataType[d]);
+							}
+						} else if (typeof dataType === "string") {
+							rtn = typeof arg === dataType;
+						}
+						return rtn;
+					};
+
+				return function (args) {
+					var rtn = {},
+						func_rtn,
+						a,
+						unpacked = [];
+
+					if (args instanceof Array) {
+						a = args.length;
+
+						if (a > maxArity) {
+							rtn.error = "EVAL: too many arguments" + nm;
+						} else if (a < minArity) {
+							rtn.error = "EVAL: too few arguments given to " + nm;
+						}
+
+						// Search for any one argument that goes against type, whilst unpacking.
+						for (; a && checkType(unpacked[a - 1] = (args[a - 1].value || args[a - 1])); a -= 1); // no body
+						
+						if (!(rtn.error)) {
+							// When a is falsy, the arguments are type-safe.
+							if (!a) {
+								func_rtn = fn(unpacked);
+								if (typeof func_rtn === "object" && (func_rtn.hasOwnProperty("value") || func_rtn.hasOwnProperty("error"))) {
+									rtn = func_rtn;
+								} else {
+									rtn.value = func_rtn;
+								}
+							} else {
+								rtn.error = nm + ": " + (args[a - 1].value || args[a - 1]) + " is not a " + fn_object.dataType;
+							}
+						}
+						
+					} else {
+						rtn.error = "Fault with Lijst. Arguments not passed as array.";
+					}
+					return rtn;
+				}
+			},
+
 			separate_terms = function (input) {
 				var str = input,
 					arr = [],
@@ -70,8 +150,6 @@ var init = function (initialise_callback) {
 							} else {
 								end_term = offset + $m.length;
 								out = whole_string.slice(begin_term, end_term);
-								console.log(end_term);
-								console.log(out);
 								begin_term = end_term;
 							}
 						} else if ($3 && !quote_level) {
@@ -108,19 +186,19 @@ var init = function (initialise_callback) {
 				var rtn,
 					arr,
 					fun,
-					arg = [];
+					arg = [],
+					term = term[0];
 				if (/\D/g.test(term)) {
 					if (/^\(.*\)$/.test(term)) {
 						if (term.slice(1, -1)) {
 							arr = separate_terms(term.slice(1, -1));
 							fun = arr.shift();
-							
 							if (lisp_fns.hasOwnProperty(fun)) {
 								if (fun === "defvar") {
-									rtn = lisp_fns[fun](arr.shift(), evaluate_term(arr.shift()));
+									rtn = lisp_fns[fun](arr.shift(), evaluate_term(arr.splice(0, 1)));
 								} else {
 									while (arr.length) {
-										arg.push(evaluate_term(arr.shift()));
+										arg.push(evaluate_term(arr.splice(0, 1)));
 									}
 									rtn = lisp_fns[fun](arg);
 								}
@@ -155,7 +233,7 @@ var init = function (initialise_callback) {
 
 				while (arr.length) {
 					// Extract first term from array and evaluate.
-					rst = evaluate_term(arr.shift());
+					rst = evaluate_term(arr.splice(0, 1));
 					// Do something with the input and results.
 					callback_each_term(input, print_result(rst));
 					// Reset the input. We have already done something with it once.
@@ -166,16 +244,35 @@ var init = function (initialise_callback) {
 			},
 
 			print_result = function (result) {
-				var rtn = result;
-				if (typeof result === "number") {
-					rtn = "" + result;
-				} else if (typeof result === "boolean") {
-					rtn = (result) ? "T" : "NIL";
+
+				var rtn;
+				if (result.hasOwnProperty("value")) {
+					if (typeof result.value === "number") {
+						rtn = "" + result.value;
+					} else if (typeof result === "boolean") {
+						rtn = (result) ? "T" : "NIL";
+					}
+				} else if (result.hasOwnProperty("error")) {
+					rtn = "*** - " + result.error;
+				} else {
+					rtn = "Error at printing stage. No value or processing error found.";
 				}
 				return rtn;
 			},
-			
-			logo_data = "\n i i i i i i i\n I I I I I I I\n I  \\ `+´ /  I\n  \\  `-+-´  /\n   `-__|__-´\n       |\n ------+------\n";
+
+			logo_data = "\n i i i i i i i\n I I I I I I I\n I  \\ `+´ /  I\n  \\  `-+-´  /\n   `-__|__-´\n       |\n ------+------\n",
+
+			f;
+		
+		// Wrap predefined lisp functions in error-checking function.
+		for (f in lisp_fns) {
+			if (lisp_fns.hasOwnProperty(f)) {
+				lisp_fns[f] = wrap_function(lisp_fns[f], f);
+			}
+		}
+		
+		evaluate_term = wrap_function(evaluate_term, "eval");
+
 
 		initialise_callback(logo_data);
 
