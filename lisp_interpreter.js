@@ -48,9 +48,10 @@ var init = function (initialise_callback) {
 						return rtn;
 					}
 				},
-				"defvar": function (symbol, bound_value) {
+				"defvar": function (args) {
 					// arity: 2
-					var symbol = symbol.toUpperCase();
+					var symbol = args[0].toUpperCase(),
+						bound_value = args[1];
 					if (lisp_vars.hasOwnProperty[symbol]) {
 						// if locked, throw error; if not, ignore?
 					} else {
@@ -195,7 +196,7 @@ var init = function (initialise_callback) {
 							fun = arr.shift();
 							if (lisp_fns.hasOwnProperty(fun)) {
 								if (fun === "defvar") {
-									rtn = lisp_fns[fun](arr.shift(), evaluate_term(arr.splice(0, 1)));
+									rtn = lisp_fns[fun]([arr.shift(), evaluate_term([arr.shift()])]);
 								} else {
 									while (arr.length) {
 										arg.push(evaluate_term(arr.splice(0, 1)));
@@ -250,6 +251,8 @@ var init = function (initialise_callback) {
 						rtn = "" + result.value;
 					} else if (typeof result.value === "boolean") {
 						rtn = (result.value) ? "T" : "NIL";
+					} else if (typeof result.value === "string") {
+						rtn = result.value;
 					}
 				} else if (result.hasOwnProperty("error")) {
 					rtn = "*** - " + result.error;
