@@ -248,8 +248,8 @@ var init = function (initialise_callback) {
 				if (result.hasOwnProperty("value")) {
 					if (typeof result.value === "number") {
 						rtn = "" + result.value;
-					} else if (typeof result === "boolean") {
-						rtn = (result) ? "T" : "NIL";
+					} else if (typeof result.value === "boolean") {
+						rtn = (result.value) ? "T" : "NIL";
 					}
 				} else if (result.hasOwnProperty("error")) {
 					rtn = "*** - " + result.error;
