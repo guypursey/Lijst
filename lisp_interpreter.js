@@ -211,12 +211,11 @@ var init = function (initialise_callback) {
 							rtn = "NIL";
 						}
 					} else if (/^".*"$/g.test(term)) {
-						console.log(term);
 						rtn = term;
 					} else {
 						term = term.toUpperCase();
 						if (lisp_vars.hasOwnProperty(term)) {
-							return lisp_vars[term].value;
+							rtn = lisp_vars[term].value;
 						}
 					}
 				} else {
