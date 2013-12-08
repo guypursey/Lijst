@@ -48,16 +48,21 @@ var init = function (initialise_callback) {
 						return rtn;
 					}
 				},
-				"defvar": function (args) {
-					// arity: 2
-					var symbol = args[0].toUpperCase(),
-						bound_value = args[1];
-					if (lisp_vars.hasOwnProperty[symbol]) {
-						// if locked, throw error; if not, ignore?
-					} else {
-						lisp_vars[symbol] = { value: bound_value, locked: false };
-					};
-					return symbol;
+				"defvar": {
+					"minArity": 1,
+					"maxArity": Infinity,
+					"dataType": ["number", "string"],
+					"fn": function (args) {
+						// arity: 2
+						var symbol = args[0].toUpperCase(),
+							bound_value = args[1];
+						if (lisp_vars.hasOwnProperty[symbol]) {
+							// if locked, throw error; if not, ignore?
+						} else {
+							lisp_vars[symbol] = { value: bound_value, locked: false };
+						};
+						return symbol;
+					}
 				}
 			},
 			
